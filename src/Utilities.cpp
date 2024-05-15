@@ -75,4 +75,36 @@ namespace Utils {
         }
     }
 
+    // Helper function to project a point onto an axis
+    float projectPointOntoAxis(const SDL_Point& point, const SDL_Point& axis) {
+        float dotProduct = point.x * axis.x + point.y * axis.y;
+        float axisLengthSquared = axis.x * axis.x + axis.y * axis.y;
+        return dotProduct / std::sqrt(axisLengthSquared);
+    }
+
+    // Helper function to get min and max projections of a shape on an axis
+    std::pair<float, float> getMinMaxProjection(const std::vector<SDL_Point>& vertices, const SDL_Point& axis) {
+        float minProjection = projectPointOntoAxis(vertices[0], axis);
+        float maxProjection = minProjection;
+        for (const SDL_Point& vertex : vertices) {
+            float projection = projectPointOntoAxis(vertex, axis);
+            if (projection < minProjection) {
+                minProjection = projection;
+            }
+            if (projection > maxProjection) {
+                maxProjection = projection;
+            }
+        }
+        return {minProjection, maxProjection};
+    }
+
+    // Helper function to reflect the ball's velocity
+    SDL_Point reflectVelocity(const SDL_Point& velocity, const SDL_Point& normal) {
+        float dotProduct = velocity.x * normal.x + velocity.y * normal.y;
+        float normalLengthSquared = normal.x * normal.x + normal.y * normal.y;
+        float scale = 2 * dotProduct / normalLengthSquared;
+        SDL_Point reflection = {velocity.x - scale * normal.x, velocity.y - scale * normal.y};
+        return reflection;
+    }
+
 }

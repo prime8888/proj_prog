@@ -66,6 +66,7 @@ void Game::clean() {
 
 void Game::setupLevel() {
     level = std::make_unique<Level>(renderer);
+    level->setBrickType(Level::BrickType::Triangular);
     level->loadLevel("../levels/level1.txt");
 }
 

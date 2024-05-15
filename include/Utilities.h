@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <string>
+#include <vector>
 #include "Ball.h"
 #include "Paddle.h"
 #include "bricks/BasicBrick.h"
@@ -23,4 +24,9 @@ namespace Utils {
 
     std::string determineCollisionSide(const SDL_Rect& ball, const SDL_Rect& brick);
 
+    float projectPointOntoAxis(const SDL_Point& point, const SDL_Point& axis);
+
+    std::pair<float, float> getMinMaxProjection(const std::vector<SDL_Point>& vertices, const SDL_Point& axis);
+
+    SDL_Point reflectVelocity(const SDL_Point& velocity, const SDL_Point& normal);
 }
