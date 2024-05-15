@@ -10,6 +10,7 @@
 #include "Ball.h"
 #include <SDL.h>
 
+
 // Level class for managing the game levels in Breakout
 class Level {
 public:
@@ -35,6 +36,7 @@ private:
     std::vector<std::shared_ptr<Brick>> bricks;
     std::shared_ptr<Paddle> paddle; // Player's paddle
     std::shared_ptr<Ball> ball; // The ball
+    
 
     BrickType currentBrickType = BrickType::Basic;
 
@@ -43,6 +45,7 @@ private:
     void loadBasicBricks(const std::vector<std::string>& layout);
     void loadHexagonalBricks();
     void loadTriangularBricks();
+    
 
     // Initial settings
     float initialPaddleX, initialPaddleY;

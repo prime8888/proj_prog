@@ -1,5 +1,4 @@
 #include "Level.h"
-#include "Utilities.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -22,6 +21,7 @@ Level::Level(SDL_Renderer* renderer)
 }
 
 Level::~Level() {}
+
 
 bool Level::loadLevel(const std::string& filename) {
     std::ifstream file(filename);
@@ -59,11 +59,20 @@ void Level::loadBasicBricks(const std::vector<std::string>& layout) {
     int yOffset = 50;      // Vertical offset from the top of the screen
 
     int y = yOffset;
+    int totalBricks = 0;
+
     for (const auto& line : layout) {
         int x = 0;
         for (char ch : line) {
             if (ch == 'X') {
-                bricks.push_back(std::make_shared<BasicBrick>(x, y, brickWidth, brickHeight, 1));
+                int hitPoints = 1;
+                if (totalBricks % 10 == 0) {
+                    hitPoints = 3;
+                } else if (totalBricks % 8 == 0) {
+                    hitPoints = 2;
+                }
+                bricks.push_back(std::make_shared<BasicBrick>(x, y, brickWidth, brickHeight, hitPoints));
+                ++totalBricks;
             }
             x += brickWidth + brickSpacing;
         }
@@ -83,6 +92,8 @@ void Level::loadHexagonalBricks() {
     float xOffset = 40; // Starting offset for x
     float yOffset = 50; // Starting offset for y
 
+    int totalBricks = 0;
+
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < columns; ++col) {
             // Calculate the position of the hexagon
@@ -94,8 +105,16 @@ void Level::loadHexagonalBricks() {
                 y += height / 2;
             }
 
+            int hitPoints = 1;
+            if (totalBricks % 10 == 0) {
+                hitPoints = 3;
+            } else if (totalBricks % 8 == 0) {
+                hitPoints = 2;
+            }
+
             // Create the hexagonal brick
-            bricks.push_back(std::make_shared<HexagonalBrick>(x, y, sideLength, 1));
+            bricks.push_back(std::make_shared<HexagonalBrick>(x, y, sideLength, hitPoints));
+            ++totalBricks;
         }
     }
 }
@@ -109,6 +128,8 @@ void Level::loadTriangularBricks() {
     float xOffset = 40; // Starting offset for x
     float yOffset = 50; // Starting offset for y
 
+    int totalBricks = 0;
+
     for (int row = 0; row < rows; ++row) {
         bool rowStartsInverted = (row % 2 != 0);
         for (int col = 0; col < columns; ++col) {
@@ -117,8 +138,16 @@ void Level::loadTriangularBricks() {
 
             bool inverted = rowStartsInverted ? (col % 2 == 0) : (col % 2 != 0);
 
+            int hitPoints = 1;
+            if (totalBricks % 10 == 0) {
+                hitPoints = 3;
+            } else if (totalBricks % 8 == 0) {
+                hitPoints = 2;
+            }
+
             // Create the triangular brick
-            bricks.push_back(std::make_shared<TriangularBrick>(x, y, base, height, inverted, 1));
+            bricks.push_back(std::make_shared<TriangularBrick>(x, y, base, height, inverted, hitPoints));
+            ++totalBricks;
         }
     }
 }
@@ -127,35 +156,8 @@ void Level::loadTriangularBricks() {
 void Level::update(float deltaTime) {
     ball->update(deltaTime);
     paddle->update(deltaTime);
-    // Collision detection between ball and paddle
-    SDL_Rect ballRect = {static_cast<int>(ball->getX()), static_cast<int>(ball->getY()), ball->getDiameter(), ball->getDiameter()};
-    SDL_Rect paddleRect = {static_cast<int>(paddle->getX()), static_cast<int>(paddle->getY()), paddle->getWidth(), paddle->getHeight()};
-    if (Utils::checkCollision(ballRect, paddleRect) && ball->canCollide()) {
-        ball->resetCollisionTimer();
-        std::cout << "Collision paddle" << std::endl;
 
-        // Point central de la raquette
-        float paddleCenter = paddle->getX() + paddle->getWidth() / 2.0;
-        // Position de frappe relative au centre
-        float hitPosition = (ball->getX() + ball->getDiameter() / 2.0) - paddleCenter;
-        // Normalisation
-        hitPosition /= (paddle->getWidth() / 2.0);
-
-        std::cout << "Hit pos " << hitPosition << std::endl;
-
-        // Angle de rebond ajusté pour un impact plus important
-        float angle = hitPosition * (M_PI / 3.0);
-
-        std::cout << "Angle: " << angle << std::endl;
-
-        // Calcul de la nouvelle vitesse
-        float speed = hypot(ball->getVelocityX(), ball->getVelocityY());
-        float newVelocityX = speed * sin(angle);
-        float newVelocityY = -speed * cos(angle); // S'assurer que la balle rebondit vers le haut
-
-        // Mise à jour de la vitesse de la balle
-        ball->setVelocity(newVelocityX, newVelocityY);
-    }
+    paddle->handleCollision(*ball);
 
     for (auto& brick : bricks) {
         brick->handleCollision(*ball);
