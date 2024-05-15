@@ -14,40 +14,32 @@ void Ball::update(float deltaTime) {
     x += velocityX * deltaTime;
     y += velocityY * deltaTime;
 
-    // Contrôle des limites pour s'assurer que la balle reste dans la fenêtre
-    if (x < 0 || x + diameter > 800) { // Assurez-vous que screen_width est défini ou accessible
-        velocityX = -velocityX; // Inverse la direction horizontale
+    // Boundary control to ensure the ball stays in the window
+    if (x < 0 || x + diameter > 800) { // Make sure screen_width is set or accessible
+        velocityX = -velocityX; // Reverses horizontal direction
         x = (x < 0) ? 0 : 800 - diameter;
     }
-    if (y < 0 || y + diameter > 600) { // Assurez-vous que screen_height est défini ou accessible
-        velocityY = -velocityY; // Inverse la direction verticale
+    if (y < 0 || y + diameter > 600) { // Make sure screen_height is set or accessible
+        velocityY = -velocityY; // Reverses vertical direction
         y = (y < 0) ? 0 : 600 - diameter;
     }
-
-    // std::cout << "Ball position: " << x << ", " << y << std::endl;
-    // std::cout << "Ball velocity: " << velocityX << ", " << velocityY << std::endl;
 }
 
 void Ball::resetCollisionTimer() {
     timeSinceLastCollision = 0;
 }
 
-// Vérifier si la balle peut subir une autre collision
+// Checks if the ball can undergo another collision
 bool Ball::canCollide() const {
     return timeSinceLastCollision >= COLLISION_COOLDOWN;
 }
 
 void Ball::render(SDL_Renderer* renderer) {
-    // Définit la couleur de la balle (ici vert)
+    // Defines the color of the ball (here green)
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 
-    // Dessine la balle comme un cercle plein
+    // Draw the ball as a solid circle
     filledCircleColor(renderer, static_cast<int>(x), static_cast<int>(y), diameter/2, 0xFF90FB3B);
-
-    // Utilisez une fonction appropriée pour dessiner un cercle avec SDL2
-    // Par exemple, en utilisant SDL_gfx ou une autre bibliothèque graphique
-    //SDL_Rect ballRect = {static_cast<int>(x), static_cast<int>(y), diameter, diameter};
-    //SDL_RenderFillRect(renderer, &ballRect);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 

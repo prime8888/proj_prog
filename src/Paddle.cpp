@@ -55,24 +55,24 @@ void Paddle::handleCollision(Ball& ball) {
     if (checkCollision(ballRect, paddleRect) && ball.canCollide()) {
         ball.resetCollisionTimer();
 
-        // Point central de la raquette
+        // Central point of the paddle
         float paddleCenter = x + width / 2.0f;
-        // Position de frappe relative au centre
+        // Hitting position relative to center
         float hitPosition = (ball.getX() + ball.getDiameter() / 2.0f) - paddleCenter;
-        // Normalisation
+        // Normalization
         hitPosition /= (width / 2.0f);
 
 
-        // Angle de rebond ajusté pour un impact plus important
+        // Adjusted bounce angle for greater impact
         float angle = hitPosition * (M_PI / 3.0f);
 
 
-        // Calcul de la nouvelle vitesse
+        // Calculation of the new speed
         float speed = hypot(ball.getVelocityX(), ball.getVelocityY());
         float newVelocityX = speed * sin(angle);
-        float newVelocityY = -speed * cos(angle); // S'assurer que la balle rebondit vers le haut
+        float newVelocityY = -speed * cos(angle); // Make sure the ball bounces upwards
 
-        // Mise à jour de la vitesse de la balle
+        // Ball speed update
         ball.setVelocity(newVelocityX, newVelocityY);
     }
 }
@@ -117,4 +117,8 @@ int Paddle::getHeight() const {
 void Paddle::setPosition(float newX, float newY) {
     x = newX;
     y = newY;
+}
+
+void Paddle::setWidth(int newWidth) {
+    width = newWidth;
 }

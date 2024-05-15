@@ -81,7 +81,7 @@ bool Brick::checkCollision(const SDL_Rect& ballRect) {
     return true; // Collision occurred
 }
 
-void Brick::handleCollision(Ball& ball, bool& addBalls) {
+void Brick::handleCollision(Ball& ball, bool& addBalls, bool& expandPaddle) {
     std::mt19937 rng(std::random_device{}());  // Random number generator
     std::uniform_real_distribution<float> dist(0.0, 1.0);  // Distribution for random chance
 
@@ -90,8 +90,12 @@ void Brick::handleCollision(Ball& ball, bool& addBalls) {
         ball.resetCollisionTimer();
         this->hit();
 
-        if (dist(rng) < 0.05) {  // 10% chance to trigger multi-ball
+        if (dist(rng) < 0.1) {  // 10% chance to trigger multi-ball
             addBalls = true;
+        }
+
+        if (dist(rng) < 0.15 && this->hitPoints == 2) {
+            expandPaddle = true;
         }
 
         // Calculate the normal for each edge of the brick

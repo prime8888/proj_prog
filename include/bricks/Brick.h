@@ -12,7 +12,7 @@ public:
     Brick(float x, float y, int hitPoints);
     virtual ~Brick() {}
     virtual void render(SDL_Renderer* renderer) = 0;
-    virtual void handleCollision(Ball& ball, bool& addBalls);
+    virtual void handleCollision(Ball& ball, bool& addBalls, bool& expandPaddle);
     virtual bool checkCollision(const SDL_Rect& ballRect); // Moved to base class
     void hit(); // Called when the brick is hit by the ball
     bool isDestroyed() const; // Check if the brick is destroyed

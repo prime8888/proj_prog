@@ -37,21 +37,23 @@ private:
     std::vector<std::shared_ptr<Brick>> bricks;
     std::shared_ptr<Paddle> paddle; // Player's paddle
     std::vector<std::shared_ptr<Ball>> balls; // The balls
-    
 
     BrickType currentBrickType = BrickType::Basic;
 
-    // Load bricks from file data
     void loadBricks(const std::vector<std::string>& layout);
     void loadBasicBricks(const std::vector<std::string>& layout);
     void loadHexagonalBricks();
     void loadTriangularBricks();
     void addNewBall(float x, float y, float velX, float velY);
     void triggerMultiBall();
+    void activatePaddleExpansion(float duration);
     
 
     // Initial settings
     float initialPaddleX, initialPaddleY;
     float initialBallX, initialBallY;
+
     int screen_width, screen_height;
+    bool isPaddleExpanded;
+    float paddleExpansionEndTime;
 };

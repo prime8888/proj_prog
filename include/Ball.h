@@ -3,23 +3,23 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 
-// Classe Ball pour gérer la logique de la balle dans le jeu Casse Brique
+// Ball class to manage the logic of the ball in the Brick Break game
 class Ball {
 public:
     Ball(float x, float y, float velocityX, float velocityY, int diameter);
     ~Ball();
 
-    // Fonctions pour gérer le mouvement et la mise à jour de la balle
+    // Functions to manage the movement and updating of the ball
     void update(float deltaTime);
     void render(SDL_Renderer* renderer);
     void resetCollisionTimer();
     bool canCollide() const;
 
-    // Fonctions pour la gestion des collisions
+    // Functions for collision management
     void reverseY();
     void reverseX();
 
-    // Accesseurs
+    // Accessors
     float getX() const;
     float getY() const;
     int getDiameter() const;
@@ -30,9 +30,9 @@ public:
     void setVelocity(float vx, float vy);
 
 private:
-    float x, y;             // Position de la balle
-    float velocityX, velocityY; // Vitesse de la balle sur l'axe X et Y
-    int diameter;           // Diamètre de la balle
+    float x, y;             // Ball position
+    float velocityX, velocityY; // Ball speed on the X and Y axis
+    int diameter;           // Ball diameter
     float timeSinceLastCollision;
     const float COLLISION_COOLDOWN = 0.05;
 };

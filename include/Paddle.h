@@ -20,6 +20,7 @@ public:
     int getWidth() const;
     int getHeight() const;
     void setPosition(float newX, float newY);
+    void setWidth(int newWidth);
 
 private:
     float x, y;

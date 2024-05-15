@@ -10,8 +10,6 @@ Level::Level(SDL_Renderer* renderer)
     initialPaddleY = screen_height - 30; // Paddle y-position
     initialBallX = screen_width / 2 - 7.5; // Assuming ball diameter is 15
     initialBallY = initialPaddleY - 180; // Ball just above the paddle
-    //initialBallY = 50;
-
     
     // Initialize paddle and ball
     paddle = std::make_shared<Paddle>(initialPaddleX, initialPaddleY, 150, 20, 400);
@@ -19,7 +17,6 @@ Level::Level(SDL_Renderer* renderer)
     // Initialize the ball vector with one ball
     std::shared_ptr<Ball> initialBall = std::make_shared<Ball>(initialBallX, initialBallY, 0, 400, 15);
     balls.push_back(initialBall);
-    //std::cout << "Init ball y: " << ball->getY() << std::endl;
 }
 
 Level::~Level() {}
@@ -157,8 +154,26 @@ void Level::loadTriangularBricks() {
 
 
 bool Level::update(float deltaTime, bool& victory) {
-    //std::mt19937 rng(std::random_device{}());  // Random number generator
-    //std::uniform_real_distribution<float> dist(0.0, 1.0);  // Distribution for random chance
+    int allDestroyed = true;
+    for (auto& brick : bricks) {
+        if (!brick->isDestroyed()) {
+            allDestroyed = false;
+            break;
+        }
+    }
+
+    if (allDestroyed) {
+        victory = true;
+        return false;
+    }
+
+
+    float currentTime = SDL_GetTicks() / 1000.0f;
+    // Handle paddle expansion duration
+    if (isPaddleExpanded && currentTime >= paddleExpansionEndTime) {
+        paddle->setWidth(paddle->getWidth() - 30);  // Reset to original width
+        isPaddleExpanded = false;
+    }
 
     for (auto it = balls.begin(); it != balls.end(); ) {
         auto ball = *it;
@@ -189,29 +204,22 @@ bool Level::update(float deltaTime, bool& victory) {
     }
 
     bool addBalls = false;
+    bool expandPaddle = false;
     // Check for collisions between each ball and each brick
     for (auto& brick : bricks) {
         for (auto& ball : balls) {
-            brick->handleCollision(*ball, addBalls);
+            brick->handleCollision(*ball, addBalls, expandPaddle);
         }
     }
 
-    if (addBalls){
-        //std::cout << "adding balls" << std::endl;
+    if (addBalls) {
         triggerMultiBall();
     }
 
-    int allDestroyed = true;
-    for (auto& brick : bricks) {
-        if (!brick->isDestroyed()) {
-            allDestroyed = false;
-        }
+    if (expandPaddle) {
+        activatePaddleExpansion(20);
     }
-
-    if (allDestroyed) {
-        victory = true;
-        return false;
-    }
+    
     return true;
 }
 
@@ -222,6 +230,7 @@ void Level::render() {
         }
     }
     paddle->render(renderer);
+
     for (auto& ball : balls) {
         ball->render(renderer);
     }
@@ -241,7 +250,6 @@ void Level::reset() {
     // }
 }
 
-
 void Level::addNewBall(float x, float y, float velX, float velY) {
     auto newBall = std::make_shared<Ball>(x, y, velX, velY, 15); // Assuming ball diameter is 15
     balls.push_back(newBall);
@@ -253,4 +261,10 @@ void Level::triggerMultiBall() {
     auto baseBall = balls.front();
     addNewBall(baseBall->getX(), baseBall->getY(), baseBall->getVelocityX() * 1.1f, -baseBall->getVelocityY());
     addNewBall(baseBall->getX(), baseBall->getY(), baseBall->getVelocityX() * 0.9f, -baseBall->getVelocityY());
+}
+
+void Level::activatePaddleExpansion(float duration) {
+    paddle->setWidth(paddle->getWidth() + 30);  // Expand the paddle
+    isPaddleExpanded = true;
+    paddleExpansionEndTime = SDL_GetTicks() / 1000.0f + duration;  // Set the end time for the bonus
 }

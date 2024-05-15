@@ -83,7 +83,7 @@ void Game::update(float deltaTime) {
                 displayExitMessage("Game Over");
             }
             // Wait for a few seconds
-            SDL_Delay(5000);
+            SDL_Delay(4000);
         }
         
     }

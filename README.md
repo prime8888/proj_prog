@@ -3,6 +3,14 @@
 ## Description
 This project is a modern implementation of the classic Breakout game using C++ and SDL2. The game features multiple levels, variable paddle control, and dynamic collision effects.
 
+## Functionalities:
+* a platform that can be moved using the keyboard
+* a ball that bounces depending on its angle of impact
+* bricks of different types(triangular, rectangular and hexagonal)  with different resistances
+* two types of bonus(multi-ball and expand paddle)
+* different grids loaded from an file
+
+
 ## Compilation and Running Instructions
 
 ### Prerequisites
