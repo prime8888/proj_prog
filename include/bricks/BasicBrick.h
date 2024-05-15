@@ -1,29 +1,22 @@
-#pragma once
+#ifndef BASICBRICK_H
+#define BASICBRICK_H
 
-#include <SDL.h>
+#include "bricks/Brick.h"
+#include <vector>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 
-// BasicBrick class to manage the logic of bricks in the Breakout game
-class BasicBrick {
+class BasicBrick : public Brick {
 public:
     BasicBrick(float x, float y, int width, int height, int hitPoints);
-    ~BasicBrick();
+    virtual ~BasicBrick() override;
 
-    // Functions to manage the brick's state
-    void hit(); // Called when the brick is hit by the ball
-    bool isDestroyed() const; // Check if the brick is destroyed
-    void render(SDL_Renderer* renderer); // Render the brick
-    void reset();
-
-    // Accessors
-    float getX() const;
-    float getY() const;
-    int getWidth() const;
-    int getHeight() const;
-    
+    void render(SDL_Renderer* renderer) override;
+    bool checkCollision(const SDL_Rect& ballRect) override;
 
 private:
-    float x, y;           // Position of the brick
-    int width, height;    // Size of the brick
-    int hitPoints;        // Number of hits the brick can take before being destroyed
-    bool destroyed;       // Status of the brick
+    int width, height;
+    void calculateVertices();
 };
+
+#endif // BASICBRICK_H

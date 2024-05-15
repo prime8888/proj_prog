@@ -79,8 +79,8 @@ void Game::clean() {
 
 void Game::setupLevel() {
     level = std::make_unique<Level>(renderer);
-    //level->loadLevel("../levels/easy_test.txt");
-    level->loadLevel("../levels/level1.txt");
+    level->setBrickType(Level::BrickType::Basic);
+    level->loadLevel("../levels/easy_test.txt");
 }
 
 void Game::displayExitMessage(TTF_Font* font, const std::string& message) {

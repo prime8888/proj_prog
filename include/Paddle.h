@@ -1,30 +1,33 @@
-#pragma once
+#ifndef PADDLE_H
+#define PADDLE_H
 
 #include <SDL.h>
+#include "Ball.h"
 
-// Paddle class to manage the paddle logic in the Breakout game
 class Paddle {
 public:
     Paddle(float x, float y, int width, int height, float speed);
     ~Paddle();
 
-    // Functions to manage paddle movement
     void moveLeft(float deltaTime);
     void moveRight(float deltaTime);
     void update(float deltaTime);
     void render(SDL_Renderer* renderer);
+    void handleCollision(Ball& ball);
 
-    // Accessors
     float getX() const;
     float getY() const;
     int getWidth() const;
     int getHeight() const;
-
-    void setPosition(float x, float y);
+    void setPosition(float newX, float newY);
 
 private:
-    float x, y;     // Position of the paddle
-    int width, height; // Size of the paddle
-    float speed;    // Speed of the paddle's movement
-    float velocity; // Current velocity of the paddle
+    float x, y;
+    int width, height;
+    float speed;
+    float velocity;
+
+    bool checkCollision(const SDL_Rect& a, const SDL_Rect& b);
 };
+
+#endif
