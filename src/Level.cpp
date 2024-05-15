@@ -153,7 +153,7 @@ void Level::loadTriangularBricks() {
 
 
 bool Level::update(float deltaTime, bool& victory) {
-
+    
     ball->update(deltaTime);
     paddle->update(deltaTime);
 

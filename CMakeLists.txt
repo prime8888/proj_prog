@@ -22,6 +22,7 @@ set(SOURCE_FILES
     src/Level.cpp
     src/Paddle.cpp
     src/Ball.cpp
+    src/Menu.cpp
     src/bricks/Brick.cpp
     src/bricks/BasicBrick.cpp
     src/bricks/TriangularBrick.cpp
