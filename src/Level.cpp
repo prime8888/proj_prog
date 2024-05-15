@@ -15,7 +15,10 @@ Level::Level(SDL_Renderer* renderer)
     
     // Initialize paddle and ball
     paddle = std::make_shared<Paddle>(initialPaddleX, initialPaddleY, 150, 20, 400);
-    ball = std::make_shared<Ball>(initialBallX, initialBallY, 0, 400, 15);
+
+    // Initialize the ball vector with one ball
+    std::shared_ptr<Ball> initialBall = std::make_shared<Ball>(initialBallX, initialBallY, 0, 400, 15);
+    balls.push_back(initialBall);
     //std::cout << "Init ball y: " << ball->getY() << std::endl;
 }
 
@@ -25,6 +28,7 @@ Level::~Level() {}
 bool Level::loadLevel(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
+        std::cout << "File doesn't exist \n";
         return false;
     }
 
@@ -153,21 +157,48 @@ void Level::loadTriangularBricks() {
 
 
 bool Level::update(float deltaTime, bool& victory) {
-    
-    ball->update(deltaTime);
+    //std::mt19937 rng(std::random_device{}());  // Random number generator
+    //std::uniform_real_distribution<float> dist(0.0, 1.0);  // Distribution for random chance
+
+    for (auto it = balls.begin(); it != balls.end(); ) {
+        auto ball = *it;
+        if (ball) {
+            ball->update(deltaTime);
+
+            if (ball->getY() > paddle->getY()) {
+                it = balls.erase(it); // Remove ball if it falls below the paddle
+            } else {
+                ++it;
+            }
+        }
+        else {
+            std::cerr << "Encountered a null ball pointer." << std::endl;
+            it = balls.erase(it);
+        }
+    }
+
     paddle->update(deltaTime);
 
-    // Check if the ball has fallen below the paddle
-    if (ball->getY() > paddle->getY()) {
-        std::cout << "ball get y:" << ball->getY() << std::endl;
-        std::cout << "paddle get y:" << paddle->getY() << std::endl;
-        std::cout << "Game over !!!" << std::endl;
+    if (balls.empty()) {
         return false;
     }
-    paddle->handleCollision(*ball);
 
+    // Check for collisions between each ball and the paddle
+    for (auto& ball : balls) {
+        paddle->handleCollision(*ball);
+    }
+
+    bool addBalls = false;
+    // Check for collisions between each ball and each brick
     for (auto& brick : bricks) {
-        brick->handleCollision(*ball);
+        for (auto& ball : balls) {
+            brick->handleCollision(*ball, addBalls);
+        }
+    }
+
+    if (addBalls){
+        //std::cout << "adding balls" << std::endl;
+        triggerMultiBall();
     }
 
     int allDestroyed = true;
@@ -191,17 +222,35 @@ void Level::render() {
         }
     }
     paddle->render(renderer);
-    ball->render(renderer);
+    for (auto& ball : balls) {
+        ball->render(renderer);
+    }
 }
 
 void Level::reset() {
     // Reset paddle and ball to their initial positions
     paddle->setPosition(initialPaddleX, initialPaddleY);
-    ball->setPosition(initialBallX, initialBallY);
-    ball->setVelocity(0, 400); // Reset ball velocity
+    for (auto& ball : balls) {
+        ball->setPosition(initialBallX, initialBallY);
+        ball->setVelocity(0, 400); // Reset ball velocity
+    }
 
     // Reset all bricks to not destroyed
-    for (auto& brick : bricks) {
-        brick->reset();
-    }
+    // for (auto& brick : bricks) {
+    //     brick->reset();
+    // }
+}
+
+
+void Level::addNewBall(float x, float y, float velX, float velY) {
+    auto newBall = std::make_shared<Ball>(x, y, velX, velY, 15); // Assuming ball diameter is 15
+    balls.push_back(newBall);
+}
+
+void Level::triggerMultiBall() {
+    if (balls.empty()) return; // Ensure there's at least one ball to duplicate
+
+    auto baseBall = balls.front();
+    addNewBall(baseBall->getX(), baseBall->getY(), baseBall->getVelocityX() * 1.1f, -baseBall->getVelocityY());
+    addNewBall(baseBall->getX(), baseBall->getY(), baseBall->getVelocityX() * 0.9f, -baseBall->getVelocityY());
 }

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 
     // Main game loop
     const int FPS = 60;
-    const int frameDelay = 100 / FPS;
+    const int frameDelay = 300 / FPS;
 
     Uint32 frameStart;
     int frameTime = 0;

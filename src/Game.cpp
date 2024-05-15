@@ -47,11 +47,11 @@ void Game::handleEvents() {
         menu->handleEvents(event);
         if (!menu->isRunning()) {
             std::string option = menu->getSelectedOption();
-            if (option == "Basic Layout - Level 1") {
+            if (option == "Basic - Level 1") {
                 setupLevel(Level::BrickType::Basic, 1);
-            } else if (option == "Basic Layout - Level 2") {
+            } else if (option == "Basic - Level 2") {
                 setupLevel(Level::BrickType::Basic, 2);
-            } else if (option == "Basic Layout - Level 3") {
+            } else if (option == "Basic - Level 3") {
                 setupLevel(Level::BrickType::Basic, 3);
             } else if (option == "Hexagonal Layout") {
                 setupLevel(Level::BrickType::Hexagonal, 1);

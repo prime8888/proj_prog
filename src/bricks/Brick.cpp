@@ -81,11 +81,18 @@ bool Brick::checkCollision(const SDL_Rect& ballRect) {
     return true; // Collision occurred
 }
 
-void Brick::handleCollision(Ball& ball) {
+void Brick::handleCollision(Ball& ball, bool& addBalls) {
+    std::mt19937 rng(std::random_device{}());  // Random number generator
+    std::uniform_real_distribution<float> dist(0.0, 1.0);  // Distribution for random chance
+
     SDL_Rect ballRect = {static_cast<int>(ball.getX()), static_cast<int>(ball.getY()), ball.getDiameter(), ball.getDiameter()};
     if (!this->isDestroyed() && this->checkCollision(ballRect) && ball.canCollide()) {
         ball.resetCollisionTimer();
         this->hit();
+
+        if (dist(rng) < 0.05) {  // 10% chance to trigger multi-ball
+            addBalls = true;
+        }
 
         // Calculate the normal for each edge of the brick
         std::vector<SDL_Point> normals;
