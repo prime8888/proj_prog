@@ -25,7 +25,7 @@ public:
 
     // Functions to manage the level
     bool loadLevel(const std::string& filename); // Load level from an ASCII file
-    void update(float deltaTime); // Update all objects in the level
+    bool update(float deltaTime, bool& victory); // Update all objects in the level
     void render(); // Render all objects in the level
     void reset(); // Reset the level to initial state
 

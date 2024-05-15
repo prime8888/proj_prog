@@ -1,6 +1,7 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 
 // Classe Ball pour gérer la logique de la balle dans le jeu Casse Brique
 class Ball {

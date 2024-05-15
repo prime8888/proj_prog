@@ -1,7 +1,10 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <memory>
+#include <string>
+#include <iostream>
 #include "Level.h"
 
 // Game class for managing the state and loop of the Breakout game
@@ -25,4 +28,5 @@ private:
     std::unique_ptr<Level> level;
 
     void setupLevel();
+    void displayExitMessage(TTF_Font* font, const std::string& message);
 };
