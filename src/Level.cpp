@@ -10,15 +10,14 @@ Level::Level(SDL_Renderer* renderer)
     initialPaddleX = screen_width / 2 - 75; // Assuming paddle width is 150
     initialPaddleY = screen_height - 30; // Paddle y-position
     initialBallX = screen_width / 2 - 7.5; // Assuming ball diameter is 15
-    // initialBallY = initialPaddleY - 20; // Ball just above the paddle
-    initialBallY = 50;
-    // std::cout << "Init paddle y: " << initialPaddleY << std::endl; 
+    initialBallY = initialPaddleY - 35; // Ball just above the paddle
+    //initialBallY = 50;
 
     
     // Initialize paddle and ball
-    paddle = std::make_shared<Paddle>(initialPaddleX, initialPaddleY, 150, 20, 300);
+    paddle = std::make_shared<Paddle>(initialPaddleX, initialPaddleY, 150, 20, 400);
     ball = std::make_shared<Ball>(initialBallX, initialBallY, 0, 400, 15);
-    // std::cout << "Init ball y: " << ball->getY() << std::endl;
+    //std::cout << "Init ball y: " << ball->getY() << std::endl;
 }
 
 Level::~Level() {}
@@ -59,9 +58,17 @@ void Level::loadBricks(const std::vector<std::string>& layout) {
     }
 }
 
-void Level::update(float deltaTime) {
+bool Level::update(float deltaTime, bool& victory) {
+
     ball->update(deltaTime);
     paddle->update(deltaTime);
+
+    // Check if the ball has fallen below the paddle
+    if (ball->getY() > paddle->getY()) {
+        std::cout << "Game over !!!" << std::endl;
+        return false;
+    }
+
     // Collision detection between ball and paddle
     SDL_Rect ballRect = {static_cast<int>(ball->getX()), static_cast<int>(ball->getY()), ball->getDiameter(), ball->getDiameter()};
     SDL_Rect paddleRect = {static_cast<int>(paddle->getX()), static_cast<int>(paddle->getY()), paddle->getWidth(), paddle->getHeight()};
@@ -118,6 +125,19 @@ void Level::update(float deltaTime) {
             }
         }
     }
+
+    int allDestroyed = true;
+    for (auto& brick : bricks) {
+        if (!brick->isDestroyed()) {
+            allDestroyed = false;
+        }
+    }
+
+    if (allDestroyed) {
+        victory = true;
+        return false;
+    }
+    return true;
 }
 
 void Level::render() {

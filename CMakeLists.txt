@@ -22,4 +22,4 @@ set(SOURCE_FILES
 )
 
 add_executable(Breakout ${SOURCE_FILES})
-target_link_libraries(Breakout ${SDL2_LIBRARIES})
+target_link_libraries(Breakout ${SDL2_LIBRARIES} SDL2_gfx SDL2_ttf)
