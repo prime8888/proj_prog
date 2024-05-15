@@ -79,7 +79,7 @@ void Game::clean() {
 
 void Game::setupLevel() {
     level = std::make_unique<Level>(renderer);
-    level->setBrickType(Level::BrickType::Basic);
+    level->setBrickType(Level::BrickType::Hexagonal);
     level->loadLevel("../levels/easy_test.txt");
 }
 

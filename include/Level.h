@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <random>
 #include "bricks/BasicBrick.h"
 #include "bricks/HexagonalBrick.h"
 #include "bricks/TriangularBrick.h"
@@ -35,7 +36,7 @@ private:
     SDL_Renderer* renderer; // SDL Renderer for drawing
     std::vector<std::shared_ptr<Brick>> bricks;
     std::shared_ptr<Paddle> paddle; // Player's paddle
-    std::shared_ptr<Ball> ball; // The ball
+    std::vector<std::shared_ptr<Ball>> balls; // The balls
     
 
     BrickType currentBrickType = BrickType::Basic;
@@ -45,6 +46,8 @@ private:
     void loadBasicBricks(const std::vector<std::string>& layout);
     void loadHexagonalBricks();
     void loadTriangularBricks();
+    void addNewBall(float x, float y, float velX, float velY);
+    void triggerMultiBall();
     
 
     // Initial settings
