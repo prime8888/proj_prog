@@ -28,6 +28,7 @@ Level::~Level() {}
 bool Level::loadLevel(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
+        std::cout << "File doesn't exist \n";
         return false;
     }
 
@@ -235,9 +236,9 @@ void Level::reset() {
     }
 
     // Reset all bricks to not destroyed
-    for (auto& brick : bricks) {
-        brick->reset();
-    }
+    // for (auto& brick : bricks) {
+    //     brick->reset();
+    // }
 }
 
 

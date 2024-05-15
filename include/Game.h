@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include "Level.h"
+#include "Menu.h"
 
 // Game class for managing the state and loop of the Breakout game
 class Game {
@@ -27,6 +28,10 @@ private:
     SDL_Renderer* renderer;
     std::unique_ptr<Level> level;
 
-    void setupLevel();
-    void displayExitMessage(TTF_Font* font, const std::string& message);
+    TTF_Font* font;
+    std::unique_ptr<Menu> menu;
+    enum GameState { MENU, GAME } gameState;
+
+    void setupLevel(Level::BrickType type, int levelNumber);
+    void displayExitMessage(const std::string& message);
 };

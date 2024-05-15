@@ -4,15 +4,17 @@
 int main(int argc, char* argv[]) {
     Game breakoutGame;
 
-    // Initialize the game
-    breakoutGame.init("Breakout", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
-
     // Initialize SDL_ttf
     if (TTF_Init() != 0) {
         std::cerr << "Unable to initialize SDL_ttf: " << TTF_GetError() << std::endl;
         SDL_Quit();
         return 1;
     }
+
+    // Initialize the game
+    breakoutGame.init("Breakout", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
+
+    
 
     // Main game loop
     const int FPS = 60;
